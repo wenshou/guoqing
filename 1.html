@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出狱倒计时</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: url('https://upload-bbs.miyoushe.com/upload/2024/01/09/324488751/4ec6cbb8a7b5515c73d1b07fc8e27c90_4973148730132100229.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+        .countdown-container {
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            max-width: 800px;
+            width: 90%;
+        }
+        h1 {
+            margin-top: 0;
+            font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        .countdown {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .countdown-item {
+            background-color: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            min-width: 80px;
+            transition: transform 0.3s ease;
+        }
+        .countdown-item:hover {
+            transform: translateY(-5px);
+        }
+        .countdown-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .countdown-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+        .milliseconds {
+            font-size: 1.8rem;
+            vertical-align: super;
+        }
+        .total-seconds {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            font-size: 1.5rem;
+        }
+        .current-time {
+            margin-top: 30px;
+            font-size: 1.2rem;
+        }
+        @media (max-width: 600px) {
+            .countdown-item {
+                min-width: 60px;
+                padding: 10px;
+            }
+            .countdown-value {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="countdown-container">
+        <h1>距离国庆节还有</h1>
+        <div class="countdown">
+            <div class="countdown-item">
+                <div class="countdown-value" id="days">00</div>
+                <div class="countdown-label">天</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="hours">00</div>
+                <div class="countdown-label">小时</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="minutes">00</div>
+                <div class="countdown-label">分钟</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="seconds">00</div>
+                <div class="countdown-label">秒</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value">
+                    <span id="milliseconds">000</span>
+                    <span class="milliseconds">ms</span>
+                </div>
+            </div>
+        </div>
+        <div class="total-seconds">
+            总计: <span id="total-seconds">0</span> 秒
+        </div>
+        <div class="current-time" id="current-time"></div>
+    </div>
+
+    <script>
+        function updateCountdown() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const nationalDay = new Date(currentYear, 9, 1, 0, 0, 0);
+            
+            if (now > nationalDay) {
+                nationalDay.setFullYear(currentYear + 1);
+            }
+            
+            const diff = nationalDay - now;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            const milliseconds = Math.floor(diff % 1000);
+            const totalSeconds = Math.floor(diff / 1000);
+            
+            document.getElementById('days').textContent = days.toString().padStart(2, '0');
+            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            document.getElementById('milliseconds').textContent = milliseconds.toString().padStart(3, '0');
+            document.getElementById('total-seconds').textContent = totalSeconds.toLocaleString();
+            
+            const timeStr = now.toLocaleTimeString('zh-CN', { 
+                hour12: false,
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('current-time').textContent = 
+                `当前时间: ${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${timeStr}.${now.getMilliseconds().toString().padStart(3, '0')}`;
+        }
+        
+        updateCountdown();
+        setInterval(updateCountdown, 1);
+    </script>
+</body>
+</html>
