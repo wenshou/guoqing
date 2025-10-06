@@ -1,23 +1,24 @@
-
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>出狱倒计时</title>
+    <title>撤离倒计时</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
             background: url('https://upload-bbs.miyoushe.com/upload/2024/01/09/324488751/4ec6cbb8a7b5515c73d1b07fc8e27c90_4973148730132100229.jpg') no-repeat center center fixed;
             background-size: cover;
             color: white;
             text-align: center;
             position: relative;
+            flex-direction: column;
+            padding: 20px;
         }
         body::before {
             content: '';
@@ -31,16 +32,22 @@
         }
         .countdown-container {
             background-color: rgba(0, 0, 0, 0.7);
-            padding: 40px;
+            padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(5px);
-            max-width: 800px;
+            max-width: 600px;
             width: 90%;
+            margin-bottom: 20px;
         }
         h1 {
             margin-top: 0;
             font-size: 2.5rem;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        h2 {
+            margin-top: 0;
+            font-size: 1.5rem;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
         }
         .countdown {
@@ -52,16 +59,16 @@
         }
         .countdown-item {
             background-color: rgba(255, 255, 255, 0.2);
-            padding: 15px;
+            padding: 12px;
             border-radius: 10px;
-            min-width: 80px;
+            min-width: 70px;
             transition: transform 0.3s ease;
         }
         .countdown-item:hover {
             transform: translateY(-5px);
         }
         .countdown-value {
-            font-size: 2.5rem;
+            font-size: 2rem;
             font-weight: bold;
             margin-bottom: 5px;
         }
@@ -92,38 +99,75 @@
             .countdown-value {
                 font-size: 2rem;
             }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="countdown-container">
-        <h1>距离国庆节还有</h1>
+        <h1>距离元旦还有</h1>
         <div class="countdown">
             <div class="countdown-item">
-                <div class="countdown-value" id="days">00</div>
+                <div class="countdown-value" id="new-year-days">00</div>
                 <div class="countdown-label">天</div>
             </div>
             <div class="countdown-item">
-                <div class="countdown-value" id="hours">00</div>
+                <div class="countdown-value" id="new-year-hours">00</div>
                 <div class="countdown-label">小时</div>
             </div>
             <div class="countdown-item">
-                <div class="countdown-value" id="minutes">00</div>
+                <div class="countdown-value" id="new-year-minutes">00</div>
                 <div class="countdown-label">分钟</div>
             </div>
             <div class="countdown-item">
-                <div class="countdown-value" id="seconds">00</div>
+                <div class="countdown-value" id="new-year-seconds">00</div>
                 <div class="countdown-label">秒</div>
             </div>
             <div class="countdown-item">
                 <div class="countdown-value">
-                    <span id="milliseconds">000</span>
+                    <span id="new-year-milliseconds">000</span>
                     <span class="milliseconds">ms</span>
                 </div>
             </div>
         </div>
         <div class="total-seconds">
-            总计: <span id="total-seconds">0</span> 秒
+            总计: <span id="new-year-total-seconds">0</span> 秒
+        </div>
+    </div>
+
+    <div class="countdown-container">
+        <h2>距离周末还有</h2>
+        <div class="countdown">
+            <div class="countdown-item">
+                <div class="countdown-value" id="weekend-days">00</div>
+                <div class="countdown-label">天</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="weekend-hours">00</div>
+                <div class="countdown-label">小时</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="weekend-minutes">00</div>
+                <div class="countdown-label">分钟</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value" id="weekend-seconds">00</div>
+                <div class="countdown-label">秒</div>
+            </div>
+            <div class="countdown-item">
+                <div class="countdown-value">
+                    <span id="weekend-milliseconds">000</span>
+                    <span class="milliseconds">ms</span>
+                </div>
+            </div>
+        </div>
+        <div class="total-seconds">
+            总计: <span id="weekend-total-seconds">0</span> 秒
         </div>
         <div class="current-time" id="current-time"></div>
     </div>
@@ -132,27 +176,58 @@
         function updateCountdown() {
             const now = new Date();
             const currentYear = now.getFullYear();
-            const nationalDay = new Date(currentYear, 9, 1, 0, 0, 0);
             
-            if (now > nationalDay) {
-                nationalDay.setFullYear(currentYear + 1);
+            // 元旦倒计时
+            const newYear = new Date(currentYear + 1, 0, 1, 0, 0, 0);
+            const newYearDiff = newYear - now;
+            
+            const newYearDays = Math.floor(newYearDiff / (1000 * 60 * 60 * 24));
+            const newYearHours = Math.floor((newYearDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const newYearMinutes = Math.floor((newYearDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const newYearSeconds = Math.floor((newYearDiff % (1000 * 60)) / 1000);
+            const newYearMilliseconds = Math.floor(newYearDiff % 1000);
+            const newYearTotalSeconds = Math.floor(newYearDiff / 1000);
+            
+            document.getElementById('new-year-days').textContent = newYearDays.toString().padStart(2, '0');
+            document.getElementById('new-year-hours').textContent = newYearHours.toString().padStart(2, '0');
+            document.getElementById('new-year-minutes').textContent = newYearMinutes.toString().padStart(2, '0');
+            document.getElementById('new-year-seconds').textContent = newYearSeconds.toString().padStart(2, '0');
+            document.getElementById('new-year-milliseconds').textContent = newYearMilliseconds.toString().padStart(3, '0');
+            document.getElementById('new-year-total-seconds').textContent = newYearTotalSeconds.toLocaleString();
+            
+            // 周末倒计时
+            const dayOfWeek = now.getDay(); // 0是周日，6是周六
+            let daysUntilWeekend;
+            
+            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                // 已经是周末
+                daysUntilWeekend = 0;
+            } else {
+                // 计算到周五晚上的时间
+                daysUntilWeekend = 5 - dayOfWeek;
             }
             
-            const diff = nationalDay - now;
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-            const milliseconds = Math.floor(diff % 1000);
-            const totalSeconds = Math.floor(diff / 1000);
+            const weekendTarget = new Date(now);
+            weekendTarget.setDate(now.getDate() + daysUntilWeekend);
+            weekendTarget.setHours(18, 0, 0, 0); // 假设周末从周五晚上6点开始
             
-            document.getElementById('days').textContent = days.toString().padStart(2, '0');
-            document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
-            document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
-            document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
-            document.getElementById('milliseconds').textContent = milliseconds.toString().padStart(3, '0');
-            document.getElementById('total-seconds').textContent = totalSeconds.toLocaleString();
+            const weekendDiff = weekendTarget - now;
             
+            const weekendDays = Math.floor(weekendDiff / (1000 * 60 * 60 * 24));
+            const weekendHours = Math.floor((weekendDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const weekendMinutes = Math.floor((weekendDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const weekendSeconds = Math.floor((weekendDiff % (1000 * 60)) / 1000);
+            const weekendMilliseconds = Math.floor(weekendDiff % 1000);
+            const weekendTotalSeconds = Math.floor(weekendDiff / 1000);
+            
+            document.getElementById('weekend-days').textContent = weekendDays.toString().padStart(2, '0');
+            document.getElementById('weekend-hours').textContent = weekendHours.toString().padStart(2, '0');
+            document.getElementById('weekend-minutes').textContent = weekendMinutes.toString().padStart(2, '0');
+            document.getElementById('weekend-seconds').textContent = weekendSeconds.toString().padStart(2, '0');
+            document.getElementById('weekend-milliseconds').textContent = weekendMilliseconds.toString().padStart(3, '0');
+            document.getElementById('weekend-total-seconds').textContent = weekendTotalSeconds.toLocaleString();
+            
+            // 当前时间显示
             const timeStr = now.toLocaleTimeString('zh-CN', { 
                 hour12: false,
                 hour: '2-digit',
